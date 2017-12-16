@@ -19,7 +19,6 @@ public class GamePanel extends JPanel {
 	public GamePanel() {
 		super();
 		blocks = new ArrayList<>();
-//		timer = new Timer(0, timerListener);
 
 	}
 
