@@ -1,74 +1,92 @@
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
-
 import javax.swing.JPanel;
-import javax.swing.Timer;
 
-public class GamePanel extends JPanel {
+public class GamePanel extends JPanel implements Runnable, KeyListener{
 
-	private ArrayList<Block> blocks;
-//	private Timer timer;
-//	private TimerListener timerListener;
-	private KeyBoardInputListener keyBoardInputListener;
+	private static final int FRAME_WIDTH=1000;
+	private static final int FRAME_HEIGHT=800;
 
+	private Thread thread;
+	private boolean isRunning = false;
+	private int FPS = 60;
+	private long targetTime = 1000/FPS;
+
+	private GameStateManager gsm;
+	
 	public GamePanel() {
-		super();
-		blocks = new ArrayList<>();
-
+		initializePanel();
+		start();
+		
+		gsm = new GameStateManager();
 	}
 
-	public void generateBlock() {
-		blocks.add(new Block((getWidth()/2) - 25,0,50,50));
+	private void initializePanel() {
+		setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+		setBackground(Color.BLACK);
+	}
+
+
+	public void start() {
+		isRunning = true;
+		thread = new Thread(this);
+		thread.start();
 	}
 
 	@Override
+	public void run() {
+
+		long start, elapsed, wait;
+
+		while(isRunning) {
+
+			start = System.nanoTime();
+
+			tick();
+			repaint();
+
+			elapsed = System.nanoTime() - start;
+			wait = targetTime - (long) (elapsed / 1e6);
+
+			if(wait <= 0) { //attempt to sleep
+				wait = 5;
+			}
+			
+			try {
+				Thread.sleep(wait);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	private void tick() {
+		System.out.println("Running");
+	}
+
+
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		g.drawLine(0, 0, 500, 500);
-
-		for(Block b : blocks) {
-			g.setColor(b.getColor());
-			g.fillRect(b.getX(), b.getY(), b.getWidth(), b.getHeight());
-		}
+		g.clearRect(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
+		
+		gsm.draw(g);
 	}
 
-//	class TimerListener implements ActionListener{
-//
-//		@Override
-//		public void actionPerformed(ActionEvent e) {
-//			for(Block b: blocks) {
-//				b.move();
-//			}
-//		}
-//
-//	}
+	@Override
+	public void keyPressed(KeyEvent k) {
+		gsm.keyPressed(k.getKeyCode());
+	}
 
-	class KeyBoardInputListener implements KeyListener{
-
-
-		@Override
-		public void keyPressed(KeyEvent arg0) {
-
-
-		}
-
-		@Override
-		public void keyReleased(KeyEvent arg0) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void keyTyped(KeyEvent arg0) {
-			// TODO Auto-generated method stub
-
-		}
-
+	@Override
+	public void keyReleased(KeyEvent k) {
+		gsm.keyReleased(k.getKeyCode());
 
 	}
+
+	@Override
+	public void keyTyped(KeyEvent k) {}
+
 }
