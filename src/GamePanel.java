@@ -7,8 +7,8 @@ import javax.swing.JPanel;
 
 public class GamePanel extends JPanel implements Runnable, KeyListener{
 
-	private static final int FRAME_WIDTH=1000;
-	private static final int FRAME_HEIGHT=800;
+	public static final int PANEL_WIDTH=1000;
+	public static final int PANEL_HEIGHT=800;
 
 	private Thread thread;
 	private boolean isRunning = false;
@@ -25,8 +25,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 	}
 
 	private void initializePanel() {
-		setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
+		setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
 		setBackground(Color.BLACK);
+		addKeyListener(this);
+		setFocusable(true);
 	}
 
 
@@ -70,7 +72,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		g.clearRect(0, 0, FRAME_WIDTH, FRAME_HEIGHT);
+		g.clearRect(0, 0, PANEL_WIDTH, PANEL_HEIGHT);
 		
 		gsm.draw(g);
 	}

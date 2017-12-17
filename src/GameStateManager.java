@@ -7,7 +7,7 @@ public class GameStateManager {
 
 	public GameStateManager() {
 		states = new Stack<>();
-
+		states.push(new MenuState(this));
 	}
 	public void tick() {
 		states.peek().tick();
