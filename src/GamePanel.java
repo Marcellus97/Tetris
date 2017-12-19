@@ -19,9 +19,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 	
 	public GamePanel() {
 		initializePanel();
+		gsm = new GameStateManager();
 		start();
 		
-		gsm = new GameStateManager();
 	}
 
 	private void initializePanel() {
@@ -66,7 +66,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 		
 	}
 	private void tick() {
-		System.out.println("Running");
+		gsm.tick();
 	}
 
 

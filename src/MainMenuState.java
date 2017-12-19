@@ -3,18 +3,18 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 
-public class MenuState extends GameState{
+public class MainMenuState extends GameState{
 
 	private String[] options = {"Start","Help","Quit"};
 	private int currentSelection = 0;
-
-	public MenuState(GameStateManager gsm) {
+	
+	public MainMenuState(GameStateManager gsm) {
 		super(gsm);
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	public void init() {} //notn used
+	public void init() {} //not used
 
 	@Override
 	public void tick() {
@@ -66,6 +66,7 @@ public class MenuState extends GameState{
 		}
 		if(k == KeyEvent.VK_ENTER) {
 			if(currentSelection == 0) {
+				gsm.states.push(new TetrisState(gsm));
 				// play
 			}else if(false) {
 				// help
