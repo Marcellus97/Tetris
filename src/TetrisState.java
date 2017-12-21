@@ -8,10 +8,11 @@ public class TetrisState extends GameState{
 
 	private int blocksWidth = GamePanel.PANEL_WIDTH/10;
 	private int blocksHeight = GamePanel.PANEL_HEIGHT/8;
-	private int ticks;
-	
+	private int fallTicks;
+
 	private ArrayList<Block> blocks;
 	private Block fallingBlock;
+
 
 	public TetrisState(GameStateManager gsm) {
 		super(gsm);
@@ -22,13 +23,13 @@ public class TetrisState extends GameState{
 	public void init() {
 		blocks = new ArrayList<>();
 		newBlock();
-		ticks = 0;
+		fallTicks = 0;
+
 	}
 
 	@Override
 	public void tick() {
-		System.out.println(++ticks);
-		fallingBlock.fall();
+		fall();
 
 		if(fallingBlock.getY()+fallingBlock.getWidth() >= GamePanel.PANEL_HEIGHT) {
 			setBlock();
@@ -36,18 +37,30 @@ public class TetrisState extends GameState{
 			//System.out.println("x: "+fallingBlock.x+", y: "+fallingBlock.y+", width: "+fallingBlock.width+", height: "+fallingBlock.height);
 		}
 
+
+
+
+	}
+
+	private void fall() {
+		fallTicks++;
+
+		if(fallTicks >= GamePanel.FPS) {
+			fallingBlock.y+=fallingBlock.height;
+			fallTicks=0;
+		}
 	}
 
 	private void newBlock() {
 		fallingBlock = new Block(GamePanel.PANEL_WIDTH/2, -blocksHeight, blocksWidth, blocksHeight);
 	}
-	
+
 	private void setBlock() {
-		fallingBlock.stop();
+
 		fallingBlock.y = GamePanel.PANEL_HEIGHT-fallingBlock.height;
 		blocks.add(fallingBlock);
 	}
-	
+
 	@Override
 	public void draw(Graphics g) {
 		g.setColor(Color.BLACK);
@@ -63,8 +76,8 @@ public class TetrisState extends GameState{
 		for(Block b:blocks) { //draw all the still blocks
 			b.draw(g);
 		}
-		
-		
+
+
 		fallingBlock.draw(g);
 	}
 

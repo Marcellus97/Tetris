@@ -12,16 +12,17 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 
 	private Thread thread;
 	private boolean isRunning = false;
-	private int FPS = 60;
+	static int FPS = 60;
 	private long targetTime = 1000/FPS;
+	private int fallTick = 0;
 
 	private GameStateManager gsm;
-	
+
 	public GamePanel() {
 		initializePanel();
 		gsm = new GameStateManager();
 		start();
-		
+
 	}
 
 	private void initializePanel() {
@@ -56,14 +57,14 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 			if(wait <= 0) { //attempt to sleep
 				wait = 5;
 			}
-			
+
 			try {
 				Thread.sleep(wait);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-		
+
 	}
 	private void tick() {
 		gsm.tick();
@@ -73,7 +74,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		g.clearRect(0, 0, PANEL_WIDTH, PANEL_HEIGHT);
-		
+
 		gsm.draw(g);
 	}
 
