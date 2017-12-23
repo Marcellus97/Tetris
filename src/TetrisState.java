@@ -6,11 +6,12 @@ import com.sun.glass.events.KeyEvent;
 
 public class TetrisState extends GameState{
 
-	private int blocksWidth = GamePanel.PANEL_WIDTH/10;
-	private int blocksHeight = GamePanel.PANEL_HEIGHT/8;
+	//private int blocksWidth = GamePanel.PANEL_WIDTH/10;
+	//private int blocksHeight = GamePanel.PANEL_HEIGHT/8;
 	private int fallTicks;
 
 	private ArrayList<Block> blocks;
+	private Arena arena;
 	private Block fallingBlock;
 
 
@@ -22,6 +23,7 @@ public class TetrisState extends GameState{
 	@Override
 	public void init() {
 		blocks = new ArrayList<>();
+		arena = new Arena(16, 12);
 		newBlock();
 		fallTicks = 0;
 
@@ -52,7 +54,7 @@ public class TetrisState extends GameState{
 	}
 
 	private void newBlock() {
-		fallingBlock = new Block(GamePanel.PANEL_WIDTH/2, -blocksHeight, blocksWidth, blocksHeight);
+		fallingBlock = new Block(GamePanel.PANEL_WIDTH/2, -arena.blocksHeight, arena.blocksWidth, arena.blocksHeight);
 	}
 
 	private void setBlock() {
@@ -64,14 +66,7 @@ public class TetrisState extends GameState{
 	@Override
 	public void draw(Graphics g) {
 		g.setColor(Color.BLACK);
-
-		//draw a grid
-		for(int i =0; i<GamePanel.PANEL_WIDTH; i=i+(GamePanel.PANEL_WIDTH/10)){ 
-			g.drawLine(i, 0, i, GamePanel.PANEL_HEIGHT);
-		}
-		for(int i =0; i<GamePanel.PANEL_HEIGHT; i=i+(GamePanel.PANEL_HEIGHT/8)){
-			g.drawLine(0, i, GamePanel.PANEL_WIDTH, i);
-		}
+		arena.draw(g);
 
 		for(Block b:blocks) { //draw all the still blocks
 			b.draw(g);

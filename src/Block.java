@@ -10,8 +10,8 @@ public class Block extends Rectangle {
 	private Color blockColor;
 	private int[][] shape = {
 			{0 , 0 , 0 , 0},
-			{0 , 0 , 0 , 0},
-			{0 , 0 , 0 , 0},
+			{0 , 1 , 1 , 0},
+			{0 , 1 , 1 , 0},
 			{0 , 0 , 0 , 0} };
 	
 	public Block(int x, int y, int width, int height){
