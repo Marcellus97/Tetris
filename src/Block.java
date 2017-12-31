@@ -1,47 +1,21 @@
-
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Rectangle;
 
-import javax.swing.JComponent;
+public class Block {
 
-public class Block extends Rectangle {
-	private Color blockColor;
-	private int[][] shape = {
-			{0 , 0 , 0 , 0},
-			{0 , 1 , 1 , 0},
-			{0 , 1 , 1 , 0},
-			{0 , 0 , 0 , 0} };
+	public static final int BLOCK_WIDTH = 50;
+	public static final int BLOCK_HEGIHT = 50;
 	
-	public Block(int x, int y, int width, int height){
-		super();
-		this.setBounds(x,y,width,height);
-		blockColor=rndColor();
-
+	public int row, col;
+	
+	public Block(int row, int col) {
+		// TODO Auto-generated constructor stub
 	}
 
-	public Color getColor() {
-		return blockColor;
-	}
-
-	public void moveRight() {
-		x+=width;
-	}
-	public void moveLeft() {
-		x-=width;
-	}
 	public void draw(Graphics g) {
-		g.setColor(blockColor);
-		g.fillRect(x, y, width, height);
+		g.drawRect(col*BLOCK_WIDTH, row*BLOCK_HEGIHT, BLOCK_WIDTH, BLOCK_HEGIHT);
+		g.setColor(Color.RED);
+		g.fillRect(col*BLOCK_WIDTH, row*BLOCK_HEGIHT, BLOCK_WIDTH, BLOCK_HEGIHT);
 	}
-	public void setColor(Color newColor) {
-		blockColor=newColor;
-	}
-	// Generates random color
-	private Color rndColor() {
-		return new Color((int) (Math.random()*255), (int) (Math.random()*255), (int) (Math.random()*255));
-		//return new Color((int)(Math.random() * 0x1000000));
-	}
-	
+
 }

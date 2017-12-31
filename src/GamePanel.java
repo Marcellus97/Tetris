@@ -30,6 +30,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 		setBackground(Color.BLACK);
 		addKeyListener(this);
 		setFocusable(true);
+		requestFocus();
 	}
 
 

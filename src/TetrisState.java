@@ -6,13 +6,8 @@ import com.sun.glass.events.KeyEvent;
 
 public class TetrisState extends GameState{
 
-	//private int blocksWidth = GamePanel.PANEL_WIDTH/10;
-	//private int blocksHeight = GamePanel.PANEL_HEIGHT/8;
 	private int fallTicks;
-
-	private ArrayList<Block> blocks;
-	private Arena arena;
-	private Block fallingBlock;
+	private Block player;
 
 
 	public TetrisState(GameStateManager gsm) {
@@ -22,82 +17,47 @@ public class TetrisState extends GameState{
 
 	@Override
 	public void init() {
-		blocks = new ArrayList<>();
-		arena = new Arena(16, 12);
-		newBlock();
-		fallTicks = 0;
-
+		player = new Block(0,0);
 	}
 
 	@Override
 	public void tick() {
-		fall();
-
-		if(fallingBlock.getY()+fallingBlock.getWidth() >= GamePanel.PANEL_HEIGHT) {
-			setBlock();
-			newBlock();
-			//System.out.println("x: "+fallingBlock.x+", y: "+fallingBlock.y+", width: "+fallingBlock.width+", height: "+fallingBlock.height);
+		fallTicks++;
+		if(fallTicks > GamePanel.FPS) {
+			fall();
+			fallTicks=0;
 		}
-
-
-
 
 	}
 
 	private void fall() {
-		fallTicks++;
-
-		if(fallTicks >= GamePanel.FPS) {
-			fallingBlock.y+=fallingBlock.height;
-			fallTicks=0;
-		}
-	}
-
-	private void newBlock() {
-		fallingBlock = new Block(GamePanel.PANEL_WIDTH/2, -arena.blocksHeight, arena.blocksWidth, arena.blocksHeight);
-	}
-
-	private void setBlock() {
-
-		fallingBlock.y = GamePanel.PANEL_HEIGHT-fallingBlock.height;
-		blocks.add(fallingBlock);
+		
 	}
 
 	@Override
 	public void draw(Graphics g) {
-		g.setColor(Color.BLACK);
-		arena.draw(g);
-
-		for(Block b:blocks) { //draw all the still blocks
-			b.draw(g);
-		}
-
-
-		fallingBlock.draw(g);
+		player.draw(g);
 	}
 
 	@Override
 	public void keyPressed(int k) {
 		if(k==KeyEvent.VK_RIGHT) {
-			if(fallingBlock.x +fallingBlock.width < GamePanel.PANEL_WIDTH) { //hits right wall
-				fallingBlock.moveRight();
+			player.col++;
+		}
 
-			}
-		}
 		else if(k==KeyEvent.VK_LEFT) { //hits left wall
-			if(fallingBlock.x > 0) {
-				fallingBlock.moveLeft();
-			}
+			player.col--;
 		}
+
 		else if(k==KeyEvent.VK_DOWN) {
-			setBlock();
-			newBlock();
+
 		}
+
+
 		else if(k==KeyEvent.VK_ESCAPE) {
-			gsm.states.push(new MainMenuState(gsm));
+			System.exit(0);
 		}
 	}
-
 	@Override
 	public void keyReleased(int k) {
 		// TODO Auto-generated method stub

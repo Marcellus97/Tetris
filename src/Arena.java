@@ -1,39 +1,23 @@
-import java.awt.Color;
 import java.awt.Graphics;
 
-public class Arena  {
+public class Arena {
 
-	int rows;
-	int cols;
-	int blocksWidth;
-	int blocksHeight;
-	Block[][] blocks;
-	
-	public Arena(int rows, int cols) {
-		this.rows=rows;
-		this.cols=cols;
-		blocks = new Block[rows][cols];
-		
-		blocksWidth = GamePanel.PANEL_WIDTH/rows;
-		blocksHeight = GamePanel.PANEL_HEIGHT/cols;
+	public static final int ROWS = GamePanel.PANEL_HEIGHT/Block.BLOCK_HEGIHT;
+	public static final int COLS = GamePanel.PANEL_WIDTH/Block.BLOCK_WIDTH;
+
+	public Block[][] matrix;
+
+	public Arena() {
+		matrix = new Block[ROWS][COLS];
 	}
-	
+
 	public void draw(Graphics g) {
-		for(int i =0; i<GamePanel.PANEL_WIDTH; i=i+(blocksWidth)){ 
-			g.drawLine(i, 0, i, GamePanel.PANEL_HEIGHT);
-		}
-		for(int i =0; i<GamePanel.PANEL_HEIGHT; i=i+(blocksHeight)){
-			g.drawLine(0, i, GamePanel.PANEL_WIDTH, i);
-		}
-		
-		for (Block[] bs: blocks) {
-			for(Block b: bs) {
-				b.draw(g);
+		for (int i =0; i<matrix.length; i++) {
+			for (int j =0; j<matrix[i].length; j++) {
+				if(matrix[i][j]!= null) {
+					
+				}
 			}
 		}
-	}
-	
-	public void merge(int row, int col, Color color) {
-		
 	}
 }
