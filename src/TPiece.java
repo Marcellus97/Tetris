@@ -1,12 +1,13 @@
 import java.awt.Color;
 import java.awt.Graphics;
 
-public class SquarePiece extends Piece {
+public class TPiece extends Piece {
 
-	public SquarePiece() {
+	public TPiece() {
 		super(2, 2);
 		
-		//matrix[0][0] = new Block();
+		matrix[0][0] = new Block(Arena.COLS/2,0); matrix[1][0] = new Block((Arena.COLS/2) +1,0);
+		matrix[0][1] = new Block(Arena.COLS/2,1); matrix[0][0] = new Block((Arena.COLS/2) +1,1);
 	}
 
 	@Override
