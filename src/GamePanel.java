@@ -7,8 +7,8 @@ import javax.swing.JPanel;
 
 public class GamePanel extends JPanel implements Runnable, KeyListener{
 
-	public static final int PANEL_WIDTH=1000;
-	public static final int PANEL_HEIGHT=800;
+	public static final int PANEL_WIDTH=800;
+	public static final int PANEL_HEIGHT=1000;
 
 	private Thread thread;
 	private boolean isRunning = false;

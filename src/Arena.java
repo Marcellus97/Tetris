@@ -11,11 +11,23 @@ public class Arena {
 		matrix = new Block[ROWS][COLS];
 	}
 
+	public void merge(Piece piece) {
+		for (int i =0; i<piece.matrix.length; i++) {
+			for (int j =0; j<piece.matrix[i].length; j++) {
+				Block block = piece.matrix[i][j];
+				if(block != null) {
+					matrix[block.row][block.col] = new Block(block.row, block.col, block.color);
+				}
+			}
+		}
+	}
+	
 	public void draw(Graphics g) {
 		for (int i =0; i<matrix.length; i++) {
 			for (int j =0; j<matrix[i].length; j++) {
 				if(matrix[i][j]!= null) {
-					
+					matrix[i][j].draw(g);
+
 				}
 			}
 		}

@@ -3,11 +3,14 @@ import java.awt.Graphics;
 
 public class TPiece extends Piece {
 
-	public TPiece() {
-		super(2, 2);
-		
-		matrix[0][0] = new Block(Arena.COLS/2,0); matrix[1][0] = new Block((Arena.COLS/2) +1,0);
-		matrix[0][1] = new Block(Arena.COLS/2,1); matrix[0][0] = new Block((Arena.COLS/2) +1,1);
+	public TPiece(Color pieceColor) {
+		super(3, 3, pieceColor);
+		//---
+		//-x-
+		//xxx
+		matrix[0][0] = null; matrix[0][1] = null; matrix[0][2] = null; 
+		matrix[1][0] = null; matrix[1][1] = new Block(rowPos+1,colPos+1,pieceColor);  matrix[1][2] = null;
+		matrix[2][0] = new Block(rowPos+2,colPos,pieceColor); matrix[2][1] = new Block(rowPos+2,colPos+1,pieceColor); matrix[2][2] = new Block(rowPos+2,colPos+2,pieceColor);
 	}
 
 	@Override
