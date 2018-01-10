@@ -7,14 +7,13 @@ import javax.swing.JPanel;
 
 public class GamePanel extends JPanel implements Runnable, KeyListener{
 
-	public static final int PANEL_WIDTH=800;
-	public static final int PANEL_HEIGHT=1000;
+	public static final int PANEL_WIDTH=600;
+	public static final int PANEL_HEIGHT=800;
 
 	private Thread thread;
 	private boolean isRunning = false;
 	static int FPS = 60;
 	private long targetTime = 1000/FPS;
-	private int fallTick = 0;
 
 	private GameStateManager gsm;
 
@@ -27,7 +26,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener{
 
 	private void initializePanel() {
 		setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
-		setBackground(Color.BLACK);
 		addKeyListener(this);
 		setFocusable(true);
 		requestFocus();

@@ -1,25 +1,61 @@
-import java.awt.Color;
-import java.awt.Graphics;
 
 public class Block {
-
-	public static final int BLOCK_WIDTH = 50;
-	public static final int BLOCK_HEGIHT = 50;
+	public final static int SIZE = 50;
+	int[][] matrix;
+	int rowPos, colPos;
+	String type;
 	
-	public int row, col;
-	public Color color;
-	
-	public Block(int row, int col, Color color) {
-		this.row = row;
-		this.col = col;
-		this.color = color;
+	public Block() {
+		rowPos = 0;
+		colPos = 4;
+		
+		randomBlock();
+		
 	}
 
-	public void draw(Graphics g) {
-		g.setColor(color);
-		g.fillRect(col*BLOCK_WIDTH, row*BLOCK_HEGIHT, BLOCK_WIDTH, BLOCK_HEGIHT);
-		g.setColor(Color.BLACK);
-		g.drawRect(col*BLOCK_WIDTH, row*BLOCK_HEGIHT, BLOCK_WIDTH, BLOCK_HEGIHT);
+	private void randomBlock() {
+		int[][] square = {	
+				{1,1},
+				{1,1}
+		};
+		int[][] line = {	
+				{1},
+				{1},
+				{1},
+				{1}
+		};
+		int[][] tee = {	
+				{1,1,1},
+				{0,1,0}
+		};
+		int[][] squiggly = {	
+				{0,1,1},
+				{1,1,0}
+		};
+		int[][] reverseSquiggly = {	
+				{0,1,1},
+				{1,1,0}
+		};
+		int[][] lBlock = {	
+				{1,0},
+				{1,0},
+				{1,1}
+		};
+		int[][] reverseLBlock = {	
+				{0,1},
+				{0,1},
+				{1,1}
+		};
+		int block = (int) (Math.random() * 7);
+		
+		switch(block) {
+		case 0: matrix = square; break;
+		case 1: matrix = line; break;
+		case 2: matrix = tee; break;
+		case 3: matrix = squiggly; break;
+		case 4: matrix = reverseSquiggly; break;
+		case 5: matrix = lBlock; break;
+		case 6: matrix = reverseLBlock; break;
+		}
 	}
-
 }

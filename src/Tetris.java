@@ -5,7 +5,7 @@ import javax.swing.JPanel;
 public class Tetris {
 
 	private static final int FRAME_X=600;
-	private static final int FRAME_Y=200;
+	private static final int FRAME_Y=100;
 	
 	private static JFrame frame;
 	private static GamePanel gamePanel;
