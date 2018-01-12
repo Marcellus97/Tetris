@@ -139,37 +139,34 @@ public class TetrisState extends GameState{
 
 		ArrayList<Integer> rowsCompleted = new ArrayList<>();
 		boolean rowCompleted;
-		int highestEmptyRow = -1;
+		int lowestEmptyRow = -1;
 
 		for (int i = 0; i<arena.length; i++) {
 			rowCompleted = true;
 
-			do {
-				for (int j = 0; j<arena[i].length; j++) {
-					if(arena[i][j]!=1) 
-						rowCompleted = false;
+			for (int j = 0; j<arena[i].length; j++) {
+				if(arena[i][j]!=1) {
+					rowCompleted = false;
+					break;
 				}
-			}while(rowCompleted);
+			}
 
 			if(rowCompleted) {
 				rowsCompleted.add(i);
-				highestEmptyRow = Math.max(highestEmptyRow, i);
+				lowestEmptyRow = Math.max(lowestEmptyRow, i);
 			}
 		}
 
-		//actual row deletion here
-		for(int row: rowsCompleted) {
-			for(int j = 0; j<arena[row].length; j++)
-				arena[row][j] = arena[row+ rowsCompleted.size()][j];
-		}
 
-		//shift rows
-		for(int i = highestEmptyRow; i>0; i--) {
-			for (int j = 0; j<arena[i].length; j++) {
-				arena[i][j] = arena[i-rowsCompleted.size()][j];
-				arena[i-rowsCompleted.size()][j] = 0;
+		//Possible animations with  rowsCompleted
+		
+		// delete completed rows and shift above rows downward
+		for (int i = lowestEmptyRow; i>rowsCompleted.size(); i--) {
+			for(int j = 0; j<arena[i].length; j++) {
+				arena[i][j] = arena[i- rowsCompleted.size()][j];
 			}
 		}
+
 		System.out.println("Deleted "+rowsCompleted.size()+" rows");
 	}
 
