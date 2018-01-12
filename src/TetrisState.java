@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.ArrayList;
 
 import com.sun.glass.events.KeyEvent;
 
@@ -12,16 +13,17 @@ public class TetrisState extends GameState{
 
 	public TetrisState(GameStateManager gsm) {
 		super(gsm);
+
+		rows = GamePanel.PANEL_HEIGHT/Block.SIZE;
+		cols = GamePanel.PANEL_WIDTH/Block.SIZE;
 		arena = new int[rows][cols];
+
+		System.out.println(rows);
+		System.out.println(cols);
 	}
 
 	@Override
 	public void init() {
-		rows = GamePanel.PANEL_HEIGHT/Block.SIZE;
-		cols = GamePanel.PANEL_WIDTH/Block.SIZE;
-		
-		System.out.println(rows);
-		System.out.println(cols);
 		block = new Block();
 	}
 
@@ -34,15 +36,18 @@ public class TetrisState extends GameState{
 
 		}
 	}
+
 	public void fall() {
 		block.rowPos++;
 		if(collideFloor() || collideBlock()){
 			block.rowPos--;
 			merge();
 			init();
+			deleteCompleteRows();
 		}
-		System.out.println("row: "+block.rowPos+" col: "+block.colPos);
+		//System.out.println("row: "+block.rowPos+" col: "+block.colPos);
 	}
+
 	public void instantFall() {
 		block.rowPos++;
 		while(!collideFloor() && !collideBlock()){
@@ -51,6 +56,7 @@ public class TetrisState extends GameState{
 		block.rowPos--;
 		merge();
 		init();
+		deleteCompleteRows();
 	}
 
 	public void rotate() {
@@ -129,6 +135,44 @@ public class TetrisState extends GameState{
 		}
 	}
 
+	private void deleteCompleteRows() {
+
+		ArrayList<Integer> rowsCompleted = new ArrayList<>();
+		boolean rowCompleted;
+		int highestEmptyRow = -1;
+
+		for (int i = 0; i<arena.length; i++) {
+			rowCompleted = true;
+
+			do {
+				for (int j = 0; j<arena[i].length; j++) {
+					if(arena[i][j]!=1) 
+						rowCompleted = false;
+				}
+			}while(rowCompleted);
+
+			if(rowCompleted) {
+				rowsCompleted.add(i);
+				highestEmptyRow = Math.max(highestEmptyRow, i);
+			}
+		}
+
+		//actual row deletion here
+		for(int row: rowsCompleted) {
+			for(int j = 0; j<arena[row].length; j++)
+				arena[row][j] = arena[row+ rowsCompleted.size()][j];
+		}
+
+		//shift rows
+		for(int i = highestEmptyRow; i>0; i--) {
+			for (int j = 0; j<arena[i].length; j++) {
+				arena[i][j] = arena[i-rowsCompleted.size()][j];
+				arena[i-rowsCompleted.size()][j] = 0;
+			}
+		}
+		System.out.println("Deleted "+rowsCompleted.size()+" rows");
+	}
+
 	@Override
 	public void draw(Graphics g) {
 		g.setColor(Color.GRAY);
@@ -167,10 +211,13 @@ public class TetrisState extends GameState{
 		}
 
 		else if(k==KeyEvent.VK_DOWN) {
-			instantFall();
+			fall();
 		}
 
 		else if(k==KeyEvent.VK_UP) {
+			instantFall();
+		}
+		else if(k==KeyEvent.VK_SPACE) {
 			rotate();
 		}
 
