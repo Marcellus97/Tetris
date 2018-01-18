@@ -1,35 +1,27 @@
 import java.awt.Graphics;
+import java.util.ArrayList;
 
 public class Arena {
 
-	public static final int ROWS = GamePanel.PANEL_HEIGHT/Block.BLOCK_HEGIHT;
-	public static final int COLS = GamePanel.PANEL_WIDTH/Block.BLOCK_WIDTH;
+	public static final int ROWS=20;
+	public static final int COLS=11;
 
-	public Block[][] matrix;
+	ArrayList<Block> blocks;
 
 	public Arena() {
-		matrix = new Block[ROWS][COLS];
+
+		blocks = new ArrayList<>();
 	}
 
-	public void merge(Piece piece) {
-		for (int i =0; i<piece.matrix.length; i++) {
-			for (int j =0; j<piece.matrix[i].length; j++) {
-				Block block = piece.matrix[i][j];
-				if(block != null) {
-					matrix[block.row][block.col] = new Block(block.row, block.col, block.color);
-				}
-			}
+
+	public void merge(Tetromino tetromino) {
+		for (Block current : tetromino.blocks) {
+			blocks.add(new Block(current.rowPos, current.colPos, current.color.darker()));
 		}
 	}
-	
 	public void draw(Graphics g) {
-		for (int i =0; i<matrix.length; i++) {
-			for (int j =0; j<matrix[i].length; j++) {
-				if(matrix[i][j]!= null) {
-					matrix[i][j].draw(g);
-
-				}
-			}
+		for (Block block : blocks) {
+			block.draw(g);
 		}
 	}
 }
