@@ -15,8 +15,13 @@ public class Arena {
 
 
 	public void merge(Tetromino tetromino) {
-		for (Block current : tetromino.blocks) {
-			blocks.add(new Block(current.rowPos, current.colPos, current.color.darker()));
+		for(Block[] row: tetromino.blocks) {
+			for(Block b: row) {
+				if(b.pivot) {
+					b.color = b.color.brighter();
+				}
+				blocks.add(new Block(b.rowPos, b.colPos, b.color, true));
+			}
 		}
 	}
 	public void draw(Graphics g) {
