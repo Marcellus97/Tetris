@@ -4,7 +4,8 @@ import com.sun.glass.events.KeyEvent;
 
 public class TetrisState extends GameState{
 	private int ticks;
-	private Tetromino player, shadow;
+	//private Tetromino player;
+	private Player p;
 	private Arena arena;
 
 	public TetrisState(GameStateManager gsm) {
@@ -15,26 +16,25 @@ public class TetrisState extends GameState{
 
 	@Override
 	public void init() {
-		player = new Tetromino();
-		shadow = new Tetromino(player.shape);
+		p = new Player();
 	}
 
 	@Override
 	public void tick() {
 		ticks++;
 		if(ticks>GamePanel.FPS) {
-			fall(1);
+			//fall(1);
 			ticks=0;
 		}
 	}
 
 	//return false if the fall resulted in collision
 	public boolean fall(int rows) {
-		moveVertically(+rows);
+		p.moveVertically(+rows);
 
 		if(collideFloor() || collideBlock()) {
-			moveVertically(-rows);
-			arena.merge(player);
+			p.moveVertically(-rows);
+			arena.merge(p);
 			init();
 			return false;
 		}
@@ -48,84 +48,47 @@ public class TetrisState extends GameState{
 		}while(falling);
 	}
 
-	public void rotate(boolean clockWise) {
 
-		int[][] rotationMatrix = new int[][]{ //ccw
-			{0, -1},
-			{1, 0}};
-
-			if (clockWise) {
-
-				rotationMatrix = new int[][]{ //cw
-					{0,  1},
-					{-1, 0}};
-			}
-
-			if(player.shape != Shape.Square) { //Square doesn't rotate
-				for(Block[] row: player.blocks) {
-					for(Block b: row) {
-
-						//old Position relative from pivot
-						int relativeRow = b.rowPos-player.pivRow;
-						int relativeCol = b.colPos-player.pivCol;
-
-						//Mulitply by Rotated Identity Matrix / CCW or CW
-						int transformRow = (rotationMatrix[0][0] * relativeRow) + (rotationMatrix[0][1] * relativeCol);
-						int transformCol = (rotationMatrix[1][0] * relativeRow) + (rotationMatrix[1][1] * relativeCol);
-
-						//Translate old posiitons to new row/col
-						b.rowPos = player.pivRow + transformRow;
-						b.colPos = player.pivCol + transformCol;
-					}
-				}
-			}
-			player.flipDir();
-	}
-	public boolean canKick() {
+	public boolean canWallKick() {
 		//try offsetting left and right until offset<longestRow
 		int offset =0;
 
 		//lateral
-		while (offset < player.longestRow()) {
+		while (offset < p.tetromino.longestRow()) {
 			offset = (offset >=0) ? (-offset) -1: -offset; //0, -1, 1, -2, 2...
-			System.out.println(offset);
 
-			moveLaterally(offset);
+			p.moveLaterally(offset);
 
-			if(!collideBlock() && !collideWall()) {
+			if(!collideBlock() && !collideWall() && !collideFloor()) {
 				return true;
 			}else {
-				moveLaterally(-offset);
+				p.moveLaterally(-offset);
 			}
 		}
+		return false;
+	}
 
-		//vertical
+	public boolean canFloorKick() {
+		if (p.shape == Shape.Line) {
+			return false;
+		}
+		
+		p.moveVertically(-1);
 
+		if(!collideBlock() && !collideWall() && !collideFloor()) {
+			return true;
+		}else {
+			p.moveVertically(2);
+			if(!collideBlock() && !collideWall() && !collideFloor()) {
+				return true;
+			}
+		}
 
 		return false;
 	}
 
-	public void moveVertically(int rows) {
-		for(Block[] row: player.blocks) {
-			for(Block b: row) {
-				b.rowPos+=rows;
-			}
-		}
-		player.pivRow+=rows;
-	}
-
-
-	public void moveLaterally(int cols) {
-		for(Block[] row: player.blocks) {
-			for(Block b: row) {
-				b.colPos+=cols;
-			}
-		}
-		player.pivCol+=cols;
-	}
-
 	public boolean collideWall() {
-		for(Block[] row: player.blocks) {
+		for(Block[] row: p.tetromino.blocks) {
 			for(Block b: row) {
 				if(b.colPos < 0) {
 					System.out.println("Collide left");
@@ -141,7 +104,7 @@ public class TetrisState extends GameState{
 	}
 
 	public boolean collideFloor() {
-		for(Block[] row: player.blocks) {
+		for(Block[] row: p.tetromino.blocks) {
 			for(Block b: row) {
 				if(b.rowPos >= Arena.ROWS) {
 					System.out.println("Collide Floor");
@@ -153,7 +116,7 @@ public class TetrisState extends GameState{
 	}
 
 	public boolean collideBlock() {
-		for(Block[] row: player.blocks) {
+		for(Block[] row: p.tetromino.blocks) {
 			for(Block b: row) {
 				for (Block arenaBlock: arena.blocks) {
 					if(b.rowPos == arenaBlock.rowPos && b.colPos == arenaBlock.colPos) {
@@ -167,22 +130,22 @@ public class TetrisState extends GameState{
 
 	@Override
 	public void draw(Graphics g) {
-		player.draw(g);
+		p.draw(g);
 		arena.draw(g);
 	}
 
 	@Override
 	public void keyPressed(int k) {
 		if(k==KeyEvent.VK_RIGHT) {
-			moveLaterally(1);
+			p.moveLaterally(1);
 			if(collideWall() || collideBlock()) {
-				moveLaterally(-1);
+				p.moveLaterally(-1);
 			}
 		}
 		else if(k==KeyEvent.VK_LEFT) {
-			moveLaterally(-1);
+			p.moveLaterally(-1);
 			if(collideWall() || collideBlock()) {
-				moveLaterally(1);
+				p.moveLaterally(1);
 			}
 		}
 
@@ -194,12 +157,22 @@ public class TetrisState extends GameState{
 			instantFall();
 		}
 		else if(k==KeyEvent.VK_SPACE) {
-			rotate(true);
+			p.rotate(true);
 			// attempt to wall kick when colliding after rotation
-			if(collideWall() || collideBlock()) {
-				if(!canKick()) {
+			if(collideWall()) {
+				if(!canWallKick()) {
 					//rotate the other way
-					rotate(false);
+					p.rotate(false);
+				}
+			}
+			else if(collideFloor()) {
+				if(!canFloorKick()) {
+					p.rotate(false);
+				}
+			}
+			else if(collideBlock()) {
+				if (!canWallKick() && !canFloorKick()) {
+					p.rotate(false);
 				}
 			}
 		}

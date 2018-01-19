@@ -14,7 +14,9 @@ public class Arena {
 	}
 
 
-	public void merge(Tetromino tetromino) {
+	public void merge(Player player) {
+		Tetromino tetromino = player.tetromino;
+		
 		for(Block[] row: tetromino.blocks) {
 			for(Block b: row) {
 				if(b.pivot) {

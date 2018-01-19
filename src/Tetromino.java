@@ -36,7 +36,22 @@ public class Tetromino {
 				longest = Math.max(longest, row.length);
 			}
 		}
-		System.out.println("Longest "+longest);
+		System.out.println("Longest Row"+longest);
+		return longest;
+	}
+	
+	public int longestCol() {
+		int longest = 0;
+
+		if(!initialDirection) {
+			longest = blocks.length;
+		}
+		else {
+			for(Block[] row: blocks) {
+				longest = Math.max(longest, row.length);
+			}
+		}
+		System.out.println("Longest Col"+longest);
 		return longest;
 	}
 
