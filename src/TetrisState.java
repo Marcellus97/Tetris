@@ -7,23 +7,30 @@ public class TetrisState extends GameState{
 	//private Tetromino player;
 	private Player p;
 	private Arena arena;
-
+	private int score = 0;
+	
 	public TetrisState(GameStateManager gsm) {
 		super(gsm);
-		init();
 		arena = new Arena();
+		init();
 	}
 
 	@Override
 	public void init() {
 		p = new Player();
+		
+		if (collideBlock()) {
+			// Lose //
+			p = new Player();
+			arena = new Arena();
+		}
 	}
 
 	@Override
 	public void tick() {
 		ticks++;
 		if(ticks>GamePanel.FPS) {
-			//fall(1);
+			fall(1);
 			ticks=0;
 		}
 	}
@@ -35,6 +42,7 @@ public class TetrisState extends GameState{
 		if(collideFloor() || collideBlock()) {
 			p.moveVertically(-rows);
 			arena.merge(p);
+			System.out.println(score+= arena.sweep());
 			init();
 			return false;
 		}
@@ -59,7 +67,7 @@ public class TetrisState extends GameState{
 
 			p.moveLaterally(offset);
 
-			if(!collideBlock() && !collideWall() && !collideFloor()) {
+			if(!collideWall() && !collideBlock()) {
 				return true;
 			}else {
 				p.moveLaterally(-offset);
@@ -72,10 +80,10 @@ public class TetrisState extends GameState{
 		if (p.shape == Shape.Line) {
 			return false;
 		}
-		
+
 		p.moveVertically(-1);
 
-		if(!collideBlock() && !collideWall() && !collideFloor()) {
+		if(!collideWall() && !collideFloor() && !collideBlock()) {
 			return true;
 		}else {
 			p.moveVertically(2);
@@ -91,11 +99,11 @@ public class TetrisState extends GameState{
 		for(Block[] row: p.tetromino.blocks) {
 			for(Block b: row) {
 				if(b.colPos < 0) {
-					System.out.println("Collide left");
+					//System.out.println("Collide left");
 					return true;
 				}
 				else if (b.colPos >= Arena.COLS) {
-					System.out.println("Collide right");
+					//System.out.println("Collide right");
 					return true;
 				}
 			}
@@ -106,8 +114,8 @@ public class TetrisState extends GameState{
 	public boolean collideFloor() {
 		for(Block[] row: p.tetromino.blocks) {
 			for(Block b: row) {
-				if(b.rowPos >= Arena.ROWS) {
-					System.out.println("Collide Floor");
+				if(b.rowPos >= Arena.ROWS || b.rowPos < 0) {
+					//System.out.println("Collide Floor");
 					return true;
 				}
 			}
@@ -118,10 +126,8 @@ public class TetrisState extends GameState{
 	public boolean collideBlock() {
 		for(Block[] row: p.tetromino.blocks) {
 			for(Block b: row) {
-				for (Block arenaBlock: arena.blocks) {
-					if(b.rowPos == arenaBlock.rowPos && b.colPos == arenaBlock.colPos) {
-						return true;
-					}
+				if(arena.blocks[b.rowPos][b.colPos] != null) {
+					return true;
 				}
 			}
 		}
@@ -130,8 +136,15 @@ public class TetrisState extends GameState{
 
 	@Override
 	public void draw(Graphics g) {
+		drawBackground(g);
 		p.draw(g);
 		arena.draw(g);
+	}
+
+	private void drawBackground(Graphics g) {
+		g.setColor(new Color(211, 202, 186));
+		g.fillRect(0, 0, GamePanel.PANEL_WIDTH, GamePanel.PANEL_HEIGHT);
+		
 	}
 
 	@Override

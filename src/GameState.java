@@ -6,7 +6,6 @@ public abstract class GameState {
 
 	public GameState(GameStateManager gsm) {
 		this.gsm=gsm;
-		init();
 	}
 
 	public abstract void init();

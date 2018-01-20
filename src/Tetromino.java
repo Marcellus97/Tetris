@@ -36,49 +36,32 @@ public class Tetromino {
 				longest = Math.max(longest, row.length);
 			}
 		}
-		System.out.println("Longest Row"+longest);
-		return longest;
-	}
-	
-	public int longestCol() {
-		int longest = 0;
-
-		if(!initialDirection) {
-			longest = blocks.length;
-		}
-		else {
-			for(Block[] row: blocks) {
-				longest = Math.max(longest, row.length);
-			}
-		}
-		System.out.println("Longest Col"+longest);
 		return longest;
 	}
 
 	private void chooseShape(boolean random) {
 		int num = (random) ? (int) (Math.random() * 7) : getShapeNum(shape); //6 shapes, randomly generated
 		int mid = (Arena.COLS/2); //Middle Col
+		pivRow = 0;
+		pivCol = mid;
 
-		switch(num) {
+		switch(6) {
 
 		case 0: shape = Shape.Square; //
 		color = Color.red;
 		blocks = new Block[][]{
-			{new Block(-2,mid, color, false), new Block(-2,mid+1, color, false)},
-			{new Block(-1,mid, color, false), new Block(-1,mid+1, color, false)}
+			{new Block(0,mid, color, false), new Block(0,mid+1, color, false)},
+			{new Block(1,mid, color, false), new Block(1,mid+1, color, false)}
 		};
-		pivRow = pivCol = 0;
 		break;
 
 		case 1: shape = Shape.Line;
 		color = Color.CYAN;
 		blocks = new Block[][]{
-			{   new Block(-1,mid-1, color, false), new Block(-1,mid, color, true), 
-				new Block(-1,mid+1, color, false), new Block(-1,mid+2, color, false)},
+			{   new Block(0,mid-1, color, false), new Block(0,mid, color, true), 
+				new Block(0,mid+1, color, false), new Block(0,mid+2, color, false)},
 			{}
 		};
-		pivRow = -1;
-		pivCol = mid;
 		break;
 
 		case 2: shape = Shape.S;
@@ -87,52 +70,39 @@ public class Tetromino {
 			{                                  new Block(0,mid, color, true), new Block(0,mid+1, color, false)},
 			{new Block(1,mid-1, color, false), new Block(1,mid, color, false)}
 		};
-		pivRow = 0;
-		pivCol = mid;
 		break;
 
 		case 3: shape = Shape.Z;
 		color = Color.ORANGE;
 		blocks = new Block[][]{
 			{new Block(0,mid-1, color, false), new Block(0,mid, color, true)},
-			{                              new Block(1,mid, color, false), new Block(1,mid+1, color, false)}
+			{                                  new Block(1,mid, color, false), new Block(1,mid+1, color, false)}
 		};
-		pivRow = 0;
-		pivCol = mid;
 		break;
 
 		case 4: shape = Shape.L;
 		color = Color.PINK;
 		blocks = new Block[][]{
-			{new Block(-1,mid, color, false)}, 
-			{new Block(0,mid, color, false)},
-			{new Block(1,mid, color, true), new Block(1,mid+1, color, false)}
+			{new Block(0,mid-1, color, false), new Block(0,mid, color, true), new Block(0,mid+1, color, false)},
+			{new Block(1,mid-1, color, false)}
 		};
-		pivRow = 1;
-		pivCol = mid;
 		break;
 
 		case 5: shape = Shape.J;
 		color = Color.YELLOW.darker();
 		blocks = new Block[][]{
-			{                                  new Block(-1,mid, color, false)}, 
-			{                                  new Block(0,mid, color, false)},
-			{new Block(1,mid-1, color, false), new Block(1,mid, color, true)}
+			{new Block(0,mid-1, color, false), new Block(0,mid, color, true), new Block(0,mid+1, color, false)},
+			{                                                                 new Block(1,mid+1, color, false)}
 		};
-		pivRow = 1;
-		pivCol = mid;
 		break;
 
 		case 6: shape = Shape.T;
 		color = Color.MAGENTA;
 		blocks = new Block[][]{
-			{new Block(-2,mid-1, color, false), new Block(-2,mid, color, true),new Block(-2,mid+1, color, false)},
-			{                                   new Block(-1,mid, color, false)}
+			{new Block(0,mid-1, color, false), new Block(0,mid, color, true),new Block(0,mid+1, color, false)},
+			{                                  new Block(1,mid, color, false)}
 		};
-		pivRow = -2;
-		pivCol = mid;
 		break;
-
 		}
 	}
 
